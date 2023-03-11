@@ -1,0 +1,36 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    font-family: Roboto, system-ui, sans-serif;
+  }
+}
+
+@layer base {
+    body {
+      @apply text-base bg-primary-white text-primary-black
+    } 
+
+   
+  }
+
+@layer components {
+  .product-overlay {
+    @apply absolute inset-0 bg-gradient-to-t from-neutral-overlay group-hover:bg-neutral-overlay opacity-40 duration-300 rounded-lg
+    
+  }
+
+  .divide-default {
+    @apply divide-x divide-neutral-graylight
+  }
+
+  .border-default-color {
+    @apply border-neutral-graylight
+  }
+
+ 
+}
