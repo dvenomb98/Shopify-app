@@ -18,7 +18,7 @@ const InternalLink: React.FC<InternalLinkProps> = ({
 }) => (
   <Link
     href={href}
-    className={classNames(removeClassNames ? '' : 'text-primary-blue hover:underline', className)}
+    className={classNames(removeClassNames ? '' : 'hover:underline', className)}
   >
     {children}
   </Link>

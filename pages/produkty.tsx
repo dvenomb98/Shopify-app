@@ -1,35 +1,34 @@
+import PageHeader from "@/components/header/PageHeader";
 import PageLayout from "@/components/layouts/PageLayout";
 import ProductsLayout from "@/components/layouts/ProductsLayout";
-import ProductsPageLayout from "@/components/layouts/ProductsPageLayout";
 import ProductCard from "@/components/products/ProductCard";
 import SearchSidebar from "@/components/sidebar/SearchSidebar";
 import { client, parseShopifyResponse } from "@/consts/shopifyClient";
+import { CollectionsNavbar, ProductWithCategory } from "@/types/types";
 import { NextPage } from "next";
 import React from "react";
-import { Collection, Product } from "shopify-buy";
-
-export interface ProductWithCategory extends Product {
-  category?: Collection;
-}
+import { Collection } from "shopify-buy";
 
 interface IndexProps {
-  collectionsWithProducts: Collection[];
+  allCollections: CollectionsNavbar[];
   allProducts: ProductWithCategory[];
 }
 
 const Index: NextPage<IndexProps> = ({
-  collectionsWithProducts,
+  allCollections,
   allProducts,
 }) => {
-  
   return (
-    <PageLayout>
-      <ProductsPageLayout>
-        <SearchSidebar collections={collectionsWithProducts} />
-        <ProductsLayout
-          gridVariant="products"
-          className="lg:basis-4/5 lg:pl-5 sm:w-full lg:min-h-screen"
-        >
+    <>
+      <SearchSidebar collections={allCollections} />
+
+      <PageLayout>
+        <PageHeader
+          title="Bread guy"
+          description="Gummies ice cream tart lollipop pudding. Chocolate bar fruitcake pastry pudding cheesecake. Croissant soufflé topping bonbon cookie dragée. Sesame snaps candy canes toffee jelly candy topping cake candy candy canes."
+        />
+
+        <ProductsLayout className="lg:min-h-screen">
           {allProducts?.length ? (
             allProducts?.map((product) => (
               <ProductCard key={product.id} product={product} />
@@ -38,40 +37,46 @@ const Index: NextPage<IndexProps> = ({
             <p>Kategorie nenalezeny.</p>
           )}
         </ProductsLayout>
-      </ProductsPageLayout>
-    </PageLayout>
+      </PageLayout>
+    </>
   );
 };
 
 export default Index;
 
 export const getStaticProps = async () => {
-  // Fetch all collections
-  const collectionsWithProducts =
-    await client.collection.fetchAllWithProducts();
+  try {
+    // Fetch all collections with pro
+    const collectionsWithProducts =
+      await client.collection.fetchAllWithProducts();
 
-  const parsedResponse: Collection[] = parseShopifyResponse(
-    collectionsWithProducts
-  );
+    const parsedResponse: Collection[] = parseShopifyResponse(
+      collectionsWithProducts
+    );
 
-  if (!parsedResponse?.length) {
-    return { notFound: true };
-  }
+    if (!parsedResponse?.length) {
+      return { notFound: true };
+    }
 
-  const allProducts = parsedResponse.flatMap((collection) => {
-    return collection?.products.map((product) => {
-      return {
-        ...product,
-        category: collection.handle,
-      };
+    const allProducts = parsedResponse.flatMap((collection) => {
+      return collection?.products.map((product) => {
+        return {
+          ...product,
+          category: collection.handle,
+        };
+      });
     });
-  });
 
-  return {
-    props: {
-      collectionsWithProducts: parsedResponse,
-      allProducts: allProducts || [],
-    },
-    revalidate: 300,
-  };
+    const allCollections = parseShopifyResponse(collectionsWithProducts)
+
+    return {
+      props: {
+        allCollections: allCollections,
+        allProducts: allProducts || [],
+      },
+      revalidate: 300,
+    };
+  } catch {
+    return { notFound: true, revalidate: 300 };
+  }
 };

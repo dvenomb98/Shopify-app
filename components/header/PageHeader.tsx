@@ -1,11 +1,11 @@
 import React, { FC } from 'react'
 
-interface CategoryHeader {
+interface PageHeader {
     title: string
-    description: string
+    description?: string
 }
 
-const CategoryHeader: FC<CategoryHeader> = ({title, description}) => {
+const PageHeader: FC<PageHeader> = ({title, description}) => {
   return (
     <div className="border-default-color border-b pb-4">
       <h1 className='font-bold text-header leading-tight sm:text-h1 mb-2'>
@@ -16,4 +16,4 @@ const CategoryHeader: FC<CategoryHeader> = ({title, description}) => {
   );
 }
 
-export default CategoryHeader
+export default PageHeader

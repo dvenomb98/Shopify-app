@@ -8,3 +8,5 @@ export const client = Client.buildClient({
 
 
 export const parseShopifyResponse = (response: any) =>  JSON.parse(JSON.stringify(response));
+
+

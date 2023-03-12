@@ -1,5 +1,5 @@
 import { fallbackIMG } from "@/consts/fallbacks";
-import { ProductWithCategory } from "@/pages/produkty";
+import { ProductWithCategory } from "@/types/types";
 import Image from "next/image";
 import React, { FC } from "react";
 import CardButton from "../atoms/CardButton";
@@ -12,7 +12,7 @@ interface ProductCardProps {
 }
 
 const ProductCard: FC<ProductCardProps> = ({ product }) => {
-  const { title, handle, images, description, variants, category } = product;
+  const { title, handle, images, variants, category } = product;
 
   const featuredImage = images?.[0];
   const imageURL = featuredImage?.src || fallbackIMG.src;
@@ -38,11 +38,10 @@ const ProductCard: FC<ProductCardProps> = ({ product }) => {
         <CardButton  />
       </InternalLink>
       <div className="flex flex-col gap-2 p-2">
-        <div className="flex items-center justify-between">
-          <h3 className="font-bold group-hover:underline">{title}</h3>
+        <div className="flex items-start justify-between">
+          <h3 className="font-bold text-h4 group-hover:underline">{title}</h3>
           <Price amount={amount} />
         </div>
-        <p className="text-neutral-gray">{description}</p>
       </div>
     </div>
   );

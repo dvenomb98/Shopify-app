@@ -1,53 +1,48 @@
-import useMobileWidth from "@/hooks/useMobile";
+
+import { CollectionsNavbar } from "@/types/types";
+import { useRouter } from "next/router";
+
 import React, { FC } from "react";
 import { Collection } from "shopify-buy";
-import Alert from "../atoms/Alert";
+
 import InternalLink from "../atoms/InternalLink";
+import Container from "../layouts/Container";
 
 interface SearchSidebarProps {
-  collections: Collection[];
+  collections: CollectionsNavbar[]
 }
 
 const SearchSidebar: FC<SearchSidebarProps> = ({ collections }) => {
 
-  if(!collections?.length) {
-    return (
-    <aside className="sm:w-full lg:basis-1/5 flex flex-col gap-5">
-      <h2 className="text-h2 font-bold">Kategorie</h2>
-      <Alert variant="info">Nenalezeny žádné kategorie</Alert>
-    </aside>  
-    )
-  }
+  const {query} = useRouter()
+
+  if(!collections?.length) return null
 
 
   return (
-    <aside className="sm:w-full lg:basis-1/5 flex flex-col gap-5">
-      <h2 className="text-h2 font-bold">Kategorie</h2>
-      <div className="flex flex-col gap-5 sm:grid sm:grid-cols-2 sm:grid-rows-auto">
+    <Container role="navigation" className="border-default-color border-b">
+      <ul className="flex font-medium items-center py-5 overflow-x-auto hide-scrollbar w-full ">
         {collections.map((collection) => {
           const { title, handle } = collection;
-          const products = collection?.products || [];
-          const itemCount = products.length;
+         const isActive = query?.collection === handle
 
           return (
             <InternalLink
               href={`/${handle}`}
               removeClassNames
-              className="group"
+              key={title}
             >
-              <div className="flex justify-between border-b border-default-color pb-2 w-full">
-                <span className="group-hover:underline transition ease-in-out">
+              <div className="relative">
+                <span className="px-5">
                   {title}
                 </span>
-                {!!itemCount && (
-                  <span className="text-neutral-gray">{`(${itemCount})`}</span>
-                )}
+                {!!isActive && <hr className="w-full border-2 border-neutral-black absolute top-[2.7rem]" />}
               </div>
             </InternalLink>
           );
         })}
-      </div>
-    </aside>
+      </ul>
+    </Container>
   );
 };
 

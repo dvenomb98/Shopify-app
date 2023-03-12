@@ -5,7 +5,7 @@ import Container from "../layouts/Container";
 
 const PageBanner = () => {
   return (
-    <div className=" bg-primary-pinklight">
+    <div className=" bg-primary-amber">
       <Container className="sm:p-16 lg:h-heroBanner flex items-center lg:justify-start sm:flex-col-reverse gap-10">
       
           <div className="lg:basis-1/3">

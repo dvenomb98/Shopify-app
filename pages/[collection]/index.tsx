@@ -1,52 +1,52 @@
 import Alert from "@/components/atoms/Alert";
-import CategoryHeader from "@/components/header/CategoryHeader";
+import PageHeader from "@/components/header/PageHeader";
 import PageLayout from "@/components/layouts/PageLayout";
 import ProductsLayout from "@/components/layouts/ProductsLayout";
-import ProductsPageLayout from "@/components/layouts/ProductsPageLayout";
 import ProductCard from "@/components/products/ProductCard";
 import SearchSidebar from "@/components/sidebar/SearchSidebar";
 import { client, parseShopifyResponse } from "@/consts/shopifyClient";
+import { CollectionsNavbar, ProductWithCategory } from "@/types/types";
+import { parseNavCollection } from "@/utils/dataUtils";
 import { GetStaticPaths, GetStaticProps } from "next";
 import React, { FC } from "react";
-import { Collection } from "shopify-buy";
+import { Collection, Product } from "shopify-buy";
 
 interface CollectionProps {
   collection: Collection;
-  allCollections: Collection[]
+  allCollections: CollectionsNavbar[]
+  products: ProductWithCategory[]
 }
 
-const Collection: FC<CollectionProps> = ({ collection, allCollections }) => {
-
-  const products = collection?.products || []
-  const title = collection?.title
-  const description = collection?.descriptionHtml || collection?.description
+const Collection: FC<CollectionProps> = ({
+  collection,
+  allCollections,
+  products,
+}) => {
+  const title = collection?.title;
+  const description = collection?.descriptionHtml || collection?.description;
 
   return (
-    <PageLayout>
-      <CategoryHeader  title={title} description={description} />
-      <ProductsPageLayout>
-        <SearchSidebar collections={allCollections} />
-        <ProductsLayout
-          gridVariant="products"
-          className="lg:basis-4/5 lg:pl-5 sm:w-full lg:min-h-screen"
-        >
-          {products?.length ? (
-            products?.map((product) => (
+    <>
+      <SearchSidebar collections={allCollections} />
+      <PageLayout>
+        <PageHeader title={title} description={description} />
+        {products?.length ? (
+          <ProductsLayout className="lg:min-h-screen">
+            {products?.map((product) => (
               <ProductCard key={product.id} product={product} />
-            ))
-          ) : (
-            <Alert variant="info">Momentálně zde nemáme žádné produkty.</Alert>
-          )}
-        </ProductsLayout>
-      </ProductsPageLayout>
-    </PageLayout>
+            ))}
+          </ProductsLayout>
+        ) : (
+          <Alert variant="info">Momentálně zde nemáme žádné produkty.</Alert>
+        )}
+      </PageLayout>
+    </>
   );
 };
 
-export default Collection
+export default Collection;
 
 export const getStaticPaths: GetStaticPaths<any> = async () => {
-
   const collections = await client.collection.fetchAll();
   const parsedData: Collection[] = parseShopifyResponse(collections);
 
@@ -58,22 +58,34 @@ export const getStaticPaths: GetStaticPaths<any> = async () => {
 };
 
 export const getStaticProps: GetStaticProps<any> = async ({ params }) => {
-  if (!params) {
-    return { notFound: true };
+  try {
+    if (!params) {
+      return { notFound: true };
+    }
+    const collection = await client.collection.fetchByHandle(
+      params.collection as string
+    );
+
+    if (!collection) {
+      return { notFound: true };
+    }
+    // FETCH DATA REQUIRED FOR NAVBAR
+    const allCollections = await client.collection.fetchAll();
+    const parsedAllCollections = parseNavCollection(allCollections)
+
+    // Parse category and add products category handle
+    const parsedCollection : Collection = parseShopifyResponse(collection);
+    const products = parsedCollection.products.map(product => ({...product, category: collection.handle}))
+
+    return {
+      props: {
+        collection: parsedCollection,
+        allCollections: parsedAllCollections,
+        products: products
+      },
+      revalidate: 180,
+    };
+  } catch {
+    return { notFound: true, revalidate: 180 };
   }
-  const collection = await client.collection.fetchByHandle(
-    params.collection as string
-  );
-
-  if (!collection) {
-    return { notFound: true };
-  }
-
-  const allCollections = await client.collection.fetchAll()
-
-  const parsedCollection = parseShopifyResponse(collection);
-  const parsedAllCollections = parseShopifyResponse(allCollections)
-
-
-  return { props: { collection: parsedCollection, allCollections: parsedAllCollections }, revalidate: 180 };
 };

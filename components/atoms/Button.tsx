@@ -27,9 +27,9 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
 
 const baseClasses = {
   [ButtonVariants.PRIMARY]:
-    'bg-neutral-blue text-primary-white border-none hover:bg-neutral-bluedark focus:ring-neutral-bluelight',
+    'bg-primary-amber text-primary-black border-none hover:bg-primary-black focus:ring-neutral-yellow hover:text-primary-white',
   [ButtonVariants.TRANSPARENT]:
-    'bg-transparent text-neutral-blue hover:text-neutral-bluedark border-2 border-neutral-blue hover:border-neutral-bluedark focus:ring-neutral-bluelight',
+    'bg-transparent text-neutral-amber hover:text-primary-black border-2 border-primary-amber hover:border-primary-amber focus:ring-neutral-yellow',
   [ButtonVariants.CUSTOM]: '',
 };
 

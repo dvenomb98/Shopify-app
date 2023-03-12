@@ -1,5 +1,5 @@
 const BREAKPOINTS = require("./config/breakpoints.js");
-const { fontFamily } = require('tailwindcss/defaultTheme')
+const { fontFamily } = require("tailwindcss/defaultTheme");
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
@@ -17,7 +17,7 @@ module.exports = {
     },
     colors: {
       primary: {
-        amber: "#FFC540",
+        amber: "#FF865E",
         purple: "#9B5DE5",
         black: "#171717",
         white: "#fafafa",
@@ -49,7 +49,7 @@ module.exports = {
     },
     extend: {
       fontFamily: {
-        sans: ['Roboto', ...fontFamily.sans],
+        sans: ["Roboto", ...fontFamily.sans],
       },
       fontSize: {
         small: "0.85rem",
@@ -69,6 +69,8 @@ module.exports = {
         image: "0px 8px 24px rgba(0, 0, 0, 0.2)",
       },
     },
-    plugins: [require("@tailwindcss/typography")],
+    plugins: [
+      require("@tailwindcss/typography")
+    ],
   },
 };
