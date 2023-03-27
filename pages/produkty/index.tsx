@@ -3,15 +3,15 @@ import PageLayout from "@/components/layouts/PageLayout";
 import ProductsLayout from "@/components/layouts/ProductsLayout";
 import ProductCard from "@/components/products/ProductCard";
 import SearchSidebar from "@/components/sidebar/SearchSidebar";
-import { client, parseShopifyResponse } from "@/consts/shopifyClient";
-import { CollectionsNavbar, ProductWithCategory } from "@/types/types";
+import { CollectionsNavbar, Product } from "@/types/types";
+import { parseNavCollection } from "@/utils/dataUtils";
+import { fetchAllCollections, fetchAllProducts } from "@/utils/fetchUtils";
 import { NextPage } from "next";
 import React from "react";
-import { Collection } from "shopify-buy";
 
 interface IndexProps {
   allCollections: CollectionsNavbar[];
-  allProducts: ProductWithCategory[];
+  allProducts: Product[];
 }
 
 const Index: NextPage<IndexProps> = ({
@@ -28,7 +28,7 @@ const Index: NextPage<IndexProps> = ({
           description="Gummies ice cream tart lollipop pudding. Chocolate bar fruitcake pastry pudding cheesecake. Croissant soufflé topping bonbon cookie dragée. Sesame snaps candy canes toffee jelly candy topping cake candy candy canes."
         />
 
-        <ProductsLayout className="lg:min-h-screen">
+        <ProductsLayout>
           {allProducts?.length ? (
             allProducts?.map((product) => (
               <ProductCard key={product.id} product={product} />
@@ -47,31 +47,17 @@ export default Index;
 export const getStaticProps = async () => {
   try {
     // Fetch all collections with pro
-    const collectionsWithProducts =
-      await client.collection.fetchAllWithProducts();
+    const collections = await fetchAllCollections()
 
-    const parsedResponse: Collection[] = parseShopifyResponse(
-      collectionsWithProducts
-    );
-
-    if (!parsedResponse?.length) {
+    if (!collections?.length) {
       return { notFound: true };
     }
 
-    const allProducts = parsedResponse.flatMap((collection) => {
-      return collection?.products.map((product) => {
-        return {
-          ...product,
-          category: collection.handle,
-        };
-      });
-    });
-
-    const allCollections = parseShopifyResponse(collectionsWithProducts)
+    const allProducts = await fetchAllProducts()
 
     return {
       props: {
-        allCollections: allCollections,
+        allCollections: parseNavCollection(collections),
         allProducts: allProducts || [],
       },
       revalidate: 300,

@@ -3,11 +3,11 @@ import PageBanner from "@/components/header/PageBanner";
 import PageLayout from "@/components/layouts/PageLayout";
 import ProductsLayout from "@/components/layouts/ProductsLayout";
 import CollectionCard from "@/components/products/CollectionCard";
-import { client, parseShopifyResponse } from "@/consts/shopifyClient";
+import { Collection } from "@/types/types";
+import { fetchAllCollections } from "@/utils/fetchUtils";
 import { ArrowRightIcon } from "@heroicons/react/20/solid";
 import { NextPage } from "next";
-import React, { FC } from "react"
-import { Collection } from "shopify-buy";
+import React  from "react"
 
 interface HomeProps {
   collections: Collection[]
@@ -31,7 +31,7 @@ const Home: NextPage<HomeProps> = ({collections}) => {
             </span>
           </InternalLink>
         </div>
-        <ProductsLayout gridVariant="home">
+        <ProductsLayout gridVariant="flex">
           {collections?.map((item) => (
             <CollectionCard key={item.id} item={item} />
           ))}
@@ -46,11 +46,11 @@ export default Home;
 
 export const getStaticProps = async () => {
   // Fetch all collections
-  const collections: Collection[] = await client.collection.fetchAll()
+  const collections: Collection[] = await fetchAllCollections()
 
   return {
    props: {
-    collections: parseShopifyResponse(collections),
+    collections: collections
   },
   revalidate: 200
  };

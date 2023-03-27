@@ -4,7 +4,7 @@ import React from "react";
 const AccountIcon = () => {
   return (
     <button aria-roledescription="account">
-      <UserIcon className="w-6 h-6 hover:opacity-70 transition ease-in-out font-bold cursor-pointer" />
+      <UserIcon className="w-6 h-6 hover:text-primary-amber transition ease-in-out font-bold cursor-pointer" />
     </button>
   );
 };

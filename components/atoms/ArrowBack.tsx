@@ -6,7 +6,7 @@ const ArrowBack: FC = () => {
   const { back } = useRouter();
   return (
     <button onClick={back} className="w-fit items-center flex gap-2 group">
-      <ArrowLeftIcon className="w-8 h-8" />
+      <ArrowLeftIcon className="w-5 h-5" />
       <span className="group-hover:underline">Vrátit se zpět</span>
     </button>
   );

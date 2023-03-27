@@ -1,9 +1,9 @@
-import { parseShopifyResponse } from "@/consts/shopifyClient";
-import { Collection } from "shopify-buy";
+import { Collection } from "@/types/types";
 
 export const parseNavCollection = (collections: Collection[]) => {
-  const parsedData: Collection[] = parseShopifyResponse(collections);
-  return parsedData.map(({ title, handle }) => {
-    return { title, handle };
+  return collections.map(({ title, slug }) => {
+    return { title, slug };
   });
 };
+
+

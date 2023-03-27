@@ -16,7 +16,7 @@ const NavLink: React.FC<NavLinkProps> = ({
 }) => (
   <Link
     href={href}
-    className={classNames('hover:opacity-70 transition ease-in-out font-medium', className)}
+    className={classNames('hover:text-primary-amber transition ease-in-out font-medium', className)}
   >
     <li>{title}</li>
   </Link>

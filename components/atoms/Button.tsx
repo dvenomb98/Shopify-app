@@ -4,7 +4,7 @@ import Loader from './Loader';
 
 export enum ButtonVariants {
   PRIMARY = 'primary',
-  TRANSPARENT = 'transparent',
+  SECONDARY = "secondary",
   CUSTOM = 'custom',
 }
 
@@ -27,10 +27,9 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
 
 const baseClasses = {
   [ButtonVariants.PRIMARY]:
-    'bg-primary-amber text-primary-black border-none hover:bg-primary-black focus:ring-neutral-yellow hover:text-primary-white',
-  [ButtonVariants.TRANSPARENT]:
-    'bg-transparent text-neutral-amber hover:text-primary-black border-2 border-primary-amber hover:border-primary-amber focus:ring-neutral-yellow',
+    'bg-primary-black text-primary-white border-none hover:bg-primary-amber hover:text-primary-black',
   [ButtonVariants.CUSTOM]: '',
+  [ButtonVariants.SECONDARY]: 'bg-neutral-graylight3 text-primary-black hover:bg-neutral-graylight disabled:',
 };
 
 const heightClasses = {
@@ -41,6 +40,7 @@ const heightClasses = {
 const widthClasses = {
   [ButtonWidth.FULL]: 'w-full',
   [ButtonWidth.DEFAULT]: 'w-48 min-w-fit',
+
 };
 
 const getClasses = (
@@ -55,7 +55,7 @@ const getClasses = (
     baseClasses[variant],
     heightClasses[size],
     widthClasses[width],
-    disabled && 'cursor-default pointer-events-none opacity-80',
+    disabled && 'cursor-default pointer-events-none opacity-70',
     className,
   );
 

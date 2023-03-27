@@ -49,16 +49,16 @@ module.exports = {
     },
     extend: {
       fontFamily: {
-        sans: ["Roboto", ...fontFamily.sans],
+        sans: ["Poppins", ...fontFamily.sans],
       },
       fontSize: {
-        small: "0.85rem",
-        base: "1rem",
+        small: "0.8rem",
+        base: "0.9rem",
         h4: "1.25rem",
         h3: "1.5rem",
         h2: "1.875rem",
         h1: "2.25rem",
-        header: "4rem",
+        header: "3rem",
       },
       height: {
         heroBanner: "600px",

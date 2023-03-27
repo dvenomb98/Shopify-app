@@ -11,7 +11,7 @@ export const layoutClasses = 'sm:container mx-auto px-5 lg:px-32 ';
 const PageLayout: React.FC<PageLayoutProps> = ({ children, className }) => {
   return (
     <main
-      className={classNames(layoutClasses, 'py-16 flex flex-col gap-16 min-h-screen', className)}
+      className={classNames(layoutClasses, 'py-16 flex flex-col gap-16', className)}
     >
       {children}
     </main>

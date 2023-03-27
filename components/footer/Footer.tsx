@@ -11,6 +11,7 @@ export const boxUlClasses = "flex flex-col gap-4"
 export const headerClasses = "font-bold text-h4"
 
 const Footer: FC = () => {
+
   return (
     <footer className="bg-neutral-graylight3 pt-16">
       <Container className="flex gap-32 sm:flex-col sm:gap-10">

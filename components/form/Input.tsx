@@ -1,30 +1,33 @@
-import React from 'react';
-import { useField } from 'formik';
-import classNames from 'classnames';
+import React from "react";
+import { useField } from "formik";
+import { FormControl, FormErrorMessage, FormLabel, Input, InputProps } from "@chakra-ui/react";
 
-export const inputClass =
-  'p-3  border borderDefaultColor rounded-sm bg-light-secondary-background dark:bg-dark-secondary-background ';
-export const inputBoxClass = 'flex flex-col gap-1 w-full';
+interface FormInputProps extends InputProps {
+	name: string;
+	label: string;
+	isOptional?: boolean;
+}
 
-const FormInput: React.FC<any> = ({ name, label, placeholder, type, customStyles, ...props }) => {
-  const [field, meta] = useField({ name });
-  const errorText = meta.error && meta.touched ? meta.error : '';
-  const id = `${name}-${field.name}`;
+const FormInput: React.FC<FormInputProps> = ({ name, label, isOptional, ...props }) => {
+	const [field, meta] = useField({ name });
+	const errorText = meta.error && meta.touched ? meta.error : "";
+	const id = `${name}-${field.name}`;
 
-  return (
-    <div className={inputBoxClass}>
-      {!!label && <label htmlFor={id}>{label}</label>}
-      <input
-        id={id}
-        {...field}
-        {...props}
-        type={type}
-        className={classNames(inputClass, customStyles)}
-        placeholder={placeholder}
-      />
-      {!!errorText && <span className="text-neutral-red">{errorText}</span>}
-    </div>
-  );
+	console.log(errorText);
+
+	return (
+		<FormControl id={id} isInvalid={!!errorText}>
+			{!!label && (
+				<FormLabel htmlFor={id}>
+					<>
+						{label} {isOptional && <span className="text-neutral-gray font-normal">(nepovinné)</span>}
+					</>
+				</FormLabel>
+			)}
+			<Input id={id} {...field} {...props} />
+			<FormErrorMessage>{errorText}</FormErrorMessage>
+		</FormControl>
+	);
 };
 
 export default FormInput;

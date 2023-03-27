@@ -1,30 +1,26 @@
 import { fallbackIMG } from "@/consts/fallbacks";
-import { createSlug} from "@/utils/routerUtils";
+import { URLS } from "@/consts/globals";
+import { Collection } from "@/types/types";
 import { ArrowRightIcon } from "@heroicons/react/20/solid";
 import Image from "next/image";
 import React, { FC } from "react";
-import { Collection } from "shopify-buy";
 import InternalLink from "../atoms/InternalLink";
 
 interface CollectionCardProps {
-  item: Collection;
+  item: Collection
 }
 
 const CollectionCard: FC<CollectionCardProps> = ({ item }) => {
   if (!item) return null;
 
-  const { title, handle } = item;
-
-  const slug = `/${(handle)}`;
-  const imageURL = item?.image?.src;
-  const imageALT = item?.image?.altText;
-
+  const { title, slug, image } = item;
+ 
   return (
-    <InternalLink href={slug} removeClassNames className="cursor-pointer">
-      <div className="w-full aspect-square relative overflow-hidden group">
+    <InternalLink href={`${URLS.CATEGORY}/${slug}`} removeClassNames className="cursor-pointer">
+      <div className="w-full aspect-square relative overflow-hidden group h-72 sm:h-48">
         <Image
-          src={imageURL || fallbackIMG.src}
-          alt={imageALT || fallbackIMG.alt}
+          src={image || fallbackIMG.src}
+          alt={title || fallbackIMG.alt}
           fill
           sizes="100vw, 100vh"
           className="rounded-lg w-full h-full object-cover"

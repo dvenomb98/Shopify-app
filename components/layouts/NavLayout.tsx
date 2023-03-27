@@ -11,7 +11,7 @@ const NavLayout: FC<NavLayoutProps> = ({ children }) => {
 
    
   return (
-    <div className={classNames("bg-primary-amber sm:sticky sm:top-0 sm:z-50")}>
+    <div className={classNames("sm:sticky bg-primary-white sm:top-0 sm:z-50")}>
       <nav className={classNames(layoutClasses, "flex justify-between py-8")}>
         {children}
       </nav>
