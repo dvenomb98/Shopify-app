@@ -40,9 +40,9 @@ const Cart: FC = () => {
 								<AlertIcon />
 								<span>
 									Nemáte v košíku žádné položky. {""}
-									<span onClick={toggle} className="underline cursor-pointer">
+									<Link href="/produkty" onClick={toggle} className="underline cursor-pointer">
 										Klikněte zde a pokračujte v nákupu.
-									</span>
+									</Link>
 								</span>
 							</Alert>
 						)}

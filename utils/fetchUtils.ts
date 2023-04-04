@@ -1,7 +1,9 @@
-import { CartItem } from "@/context/CartContext";
-import { InitialValues } from "@/pages/checkout";
+import { Delivery } from "@/consts/checkout";
+import { DeliveryStatus } from "@/consts/globals";
+import { CreateOrder } from "@/pages/checkout";
 import { Collection, Product } from "@/types/types";
-import { collection, doc, getDocs, query, setDoc, where } from "firebase/firestore";
+
+import { collection, doc, getDocs, query, serverTimestamp, setDoc, where } from "firebase/firestore";
 import { nanoid } from "nanoid";
 
 import { db } from "../firebase";
@@ -70,16 +72,22 @@ export const fetchProductBySlug = async (slug: string) => {
 	}
 };
 
-export const createOrder = async (values: InitialValues, items: CartItem[]): Promise<boolean> => {
+export const createOrder = async (values: CreateOrder): Promise<boolean> => {
 	try {
 		const modifiedValues = {
-			customer: values,
+			...values,
+			customer: values.customer,
+			order: values.order.map(({ quantity, product }: any) => ({
+				quantity,
+				product_id: product.id,
+			})),
 			id: nanoid(),
-			order: items
+			timestamp: serverTimestamp(),
+			delivered: DeliveryStatus.PENDING,
 		};
 
-		if(!items?.length) {
-			throw Error("Nemáte v košíku žádné položky.")
+		if(!values.order?.length) {
+			throw new Error("Nemáte v košíku žádné položky.")
 		}
 		await setDoc(doc(db, FirebaseDocs.ORDERS, modifiedValues.id), modifiedValues);
 		return true;

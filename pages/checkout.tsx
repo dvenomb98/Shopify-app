@@ -1,4 +1,4 @@
-import { Button } from "@/components/atoms/Button";
+import CheckoutHidden from "@/components/checkout/CheckoutHidden";
 import CheckoutInputs from "@/components/checkout/CheckoutInputs";
 import CheckoutPanel from "@/components/checkout/CheckoutPanel";
 import CheckoutSuccess from "@/components/checkout/CheckoutSuccess";
@@ -17,37 +17,51 @@ import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import * as yup from "yup";
 
-export interface InitialValues {
-	name: string;
-	surname: string;
-	company: string;
-	IC: number | undefined;
-	DIC: number | undefined;
-	country: Country;
-	address: string;
-	city: string;
-	PSC: number | undefined;
-	phone: number | undefined;
-	email: string;
-	payment_method: PaymentMethod;
-	consent: boolean;
+export interface CreateOrder {
+	customer: Pick<InitialValues, "customer">;
+	order: CartItem[];
 	delivery: Delivery;
+	payment_method: PaymentMethod;
+	pickupdate: string | Date;
+}
+
+export interface InitialValues {
+	customer: {
+		name: string;
+		surname: string;
+		company: string;
+		IC: number | null;
+		DIC: number | null;
+		country: Country;
+		address: string;
+		city: string;
+		PSC: number | null;
+		phone: string;
+		email: string;
+		consent: boolean;
+	};
+	delivery: Delivery;
+	payment_method: PaymentMethod;
+	pickupdate: Date | string;
 }
 
 const initialValues: InitialValues = {
-	name: "",
-	surname: "",
-	company: "",
-	IC: undefined,
-	DIC: undefined,
-	country: Country.CZECH,
-	address: "",
-	city: "",
-	PSC: undefined,
-	phone: undefined,
-	email: "",
+	customer: {
+		name: "",
+		surname: "",
+		company: "",
+		IC: null,
+		DIC: null,
+		country: Country.CZECH,
+		address: "",
+		city: "",
+		PSC: null,
+		phone: "",
+		email: "",
+		consent: false,
+	},
+	pickupdate: "",
 	payment_method: PaymentMethod.CARD,
-	consent: false,
 	delivery: Delivery.PICK_UP,
 };
 
@@ -55,34 +69,32 @@ const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_KEY_CLIENT as st
 
 const Checkout: NextPage = () => {
 	const { yupField, yupFieldEnum } = useFieldValidation();
-	const { cartItems, clearCart } = useCart();
+	const { cartItems, clearCart , totalPrice} = useCart();
 	const [status, setStatus] = useState<FormStatus>(FormStatus.UNSENT);
 	const { query, push } = useRouter();
 	const { success, canceled } = query;
 
-	const validationSchema = yup.object().shape({
-		name: yupField.string,
-		email: yupField.string,
-		surname: yupField.string,
-		company: yupField.stringOptional,
-		IC: yupField.positiveNumber,
-		DIC: yupField.positiveNumber,
-		country: yupFieldEnum(Country),
-		address: yupField.string,
-		city: yupField.string,
-		PSC: yupField.positiveNumberReq,
-		phone: yupField.positiveNumber,
-		consent: yupField.checkbox,
-		delivery: yupFieldEnum(Delivery),
-		payment_method: yupFieldEnum(PaymentMethod),
-	});
+	const hideCheckout = !cartItems.length && !success;
 
-	useEffect(() => {
-		// Redirect user if cart is empty
-		if (!cartItems?.length && !success) {
-			push(URLS.PRODUCTS);
-		}
-	}, [query, cartItems]);
+	const validationSchema = yup.object().shape({
+		customer: yup.object().shape({
+			name: yupField.string,
+			email: yupField.string,
+			surname: yupField.string,
+			company: yupField.stringOptional,
+			IC: yupField.positiveNumber,
+			DIC: yupField.positiveNumber,
+			country: yupFieldEnum(Country),
+			address: yupField.string,
+			city: yupField.string,
+			PSC: yupField.positiveNumberReq,
+			phone: yupField.positiveNumber,
+			consent: yupField.checkbox,
+		}),
+		payment_method: yupFieldEnum(PaymentMethod),
+		delivery: yupFieldEnum(Delivery),
+		pickupdate: yupField.date,
+	});
 
 	useEffect(() => {
 		// Check to see if this is a redirect back from Checkout
@@ -95,14 +107,18 @@ const Checkout: NextPage = () => {
 		}
 	}, [query]);
 
-	const createCheckoutSession = async (customer: InitialValues, order: CartItem[]) => {
+	const createCheckoutSession = async (values: CreateOrder) => {
 		try {
 			const stripe = await stripePromise;
 			if (!stripe) return;
+			const { customer, order, delivery, payment_method, pickupdate } = values;
 
 			const checkoutSession = await axios.post(API.CREATE_CHECKOUT, {
-				customer: customer,
-				order: order,
+				customer,
+				order,
+				delivery,
+				payment_method,
+				pickupdate,
 			});
 
 			const result = await stripe.redirectToCheckout({
@@ -114,40 +130,61 @@ const Checkout: NextPage = () => {
 			}
 		} catch (e) {
 			console.error(e);
+			setStatus(FormStatus.ERROR);
 			return false;
 		}
 	};
 	return (
 		<PageLayout>
 			<PageHeader title="Pokladna" />
-
-			<Formik
-				initialValues={initialValues}
-				onSubmit={async (values) => {
-					if (values.payment_method === PaymentMethod.CASH) {
-						const response = await createOrder(values, cartItems);
-						if (response) {
-							setStatus(FormStatus.SUCCESS);
-							clearCart();
-						} else setStatus(FormStatus.ERROR);
-					}
-					if (values.payment_method === PaymentMethod.CARD) {
-						await createCheckoutSession(values, cartItems);
-					}
-				}}
-				validationSchema={validationSchema}
-			>
-				<Form>
+			{hideCheckout ? (
+				<CheckoutHidden />
+			) : (
+				<>
 					{status !== FormStatus.SUCCESS ? (
-						<div className="flex gap-5 sm:flex-col">
-							<CheckoutInputs />
-							<CheckoutPanel status={status} />
-						</div>
+						<Formik
+							initialValues={initialValues}
+							onSubmit={async (values) => {
+								const { customer, delivery, payment_method, pickupdate } = values;
+								if (values.payment_method === PaymentMethod.CASH) {
+									const response = await createOrder({
+										customer,
+										order: cartItems,
+										delivery,
+										payment_method,
+										pickupdate,	
+										amount: totalPrice
+									});
+									if (response) {
+										push(`${process.env.NEXT_PUBLIC_HOST}${URLS.SUCCESS}`)
+										
+									} else setStatus(FormStatus.ERROR);
+								}
+								if (values.payment_method === PaymentMethod.CARD) {
+									await createCheckoutSession({
+										customer,
+										order: cartItems,
+										delivery,
+										payment_method,
+										pickupdate,
+										
+									});
+								}
+							}}
+							validationSchema={validationSchema}
+						>
+							<Form>
+								<div className="flex gap-5 sm:flex-col">
+									<CheckoutInputs />
+									<CheckoutPanel status={status} />
+								</div>
+							</Form>
+						</Formik>
 					) : (
 						<CheckoutSuccess />
 					)}
-				</Form>
-			</Formik>
+				</>
+			)}
 		</PageLayout>
 	);
 };

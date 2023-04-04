@@ -1,15 +1,9 @@
 import { GetStaticPaths, GetStaticProps } from "next";
-import React, { FC, useState } from "react";
+import React, { FC } from "react";
 import { parseNavCollection } from "@/utils/dataUtils";
 import { CollectionsNavbar, Product } from "@/types/types";
 import SearchSidebar from "@/components/sidebar/SearchSidebar";
 import PageLayout from "@/components/layouts/PageLayout";
-import Image from "next/image";
-import { fallbackIMG } from "@/consts/fallbacks";
-import { Button } from "@/components/atoms/Button";
-import { ShoppingBagIcon } from "@heroicons/react/24/outline";
-import Price from "@/components/atoms/Price";
-import classNames from "classnames";
 import ArrowBack from "@/components/atoms/ArrowBack";
 import Container from "@/components/layouts/Container";
 import { fetchAllCollections, fetchAllProducts, fetchProductBySlug } from "@/utils/fetchUtils";
@@ -26,9 +20,8 @@ const Product: FC<ProductProps> = ({ product, allCollections }) => {
 	if (!product) return null;
 
 	const { title, images, additional_info } = product;
-
-	
-
+	const { composition, allergens, note, producer, weight } = additional_info;
+	const hideInfo = !(composition && allergens && note && producer && weight);
 
 	return (
 		<>
@@ -39,12 +32,12 @@ const Product: FC<ProductProps> = ({ product, allCollections }) => {
 			<PageLayout className="pt-5">
 				<div className="flex justify-between items-start gap-10 sm:flex-col">
 					{/* IMAGE */}
-					<ProductImages images={images} title={title}/>
+					<ProductImages images={images} title={title} />
 					{/* CONTENT */}
-					<ProductContent product={product} />
+					<ProductContent product={product} hideInfo={hideInfo} />
 				</div>
 				{/* ADDITIONAL INFO */}
-				<AdditionalInfo additionalInfo={additional_info} />
+				{!hideInfo && <AdditionalInfo additionalInfo={additional_info} />}
 			</PageLayout>
 		</>
 	);

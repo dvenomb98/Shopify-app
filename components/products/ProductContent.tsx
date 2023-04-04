@@ -8,6 +8,7 @@ import Price from "../atoms/Price";
 
 interface ProductContentProps {
 	product: Product;
+	hideInfo: boolean;
 }
 const scrollTo = (scroll: boolean) => {
 	if (!scroll) return;
@@ -21,14 +22,14 @@ const scrollTo = (scroll: boolean) => {
 	}
 };
 
-const ProductContent: FC<ProductContentProps> = ({ product }) => {
-	const {addItem, toggle} = useCart()
+const ProductContent: FC<ProductContentProps> = ({ product, hideInfo }) => {
+	const { addItem, toggle } = useCart();
 	const { title, in_stock, price, description, additional_info } = product;
 
 	const handleAdd = () => {
-		addItem(product, 1)
-		toggle()
-	}
+		addItem(product, 1);
+		toggle();
+	};
 
 	const scrollElementExists =
 		!!additional_info?.weight ||
@@ -59,9 +60,11 @@ const ProductContent: FC<ProductContentProps> = ({ product }) => {
 			</Button>
 
 			{!!description && <span dangerouslySetInnerHTML={{ __html: description }} />}
-			<button onClick={() => scrollTo(scrollElementExists)} className="w-fit">
-				<span className="font-bold hover:underline">Více informací</span>
-			</button>
+			{!hideInfo && (
+				<button onClick={() => scrollTo(scrollElementExists)} className="w-fit">
+					<span className="font-bold hover:underline">Více informací</span>
+				</button>
+			)}
 		</div>
 	);
 };

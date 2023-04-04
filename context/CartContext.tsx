@@ -2,7 +2,6 @@
 import { createContext, useContext, useState, useEffect, useRef } from 'react';
 import { Product } from '@/types/types';
 import { useToggle } from 'react-use';
-import { EmptyStatement } from 'typescript';
 
 export type CartItem = {
   product: Product;

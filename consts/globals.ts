@@ -15,3 +15,9 @@ export enum FormStatus {
 export enum API {
     CREATE_CHECKOUT = "/api/create-checkout-session"
 }
+
+export enum DeliveryStatus {
+    DELIVERED = "delivered",
+    PENDING = "pending",
+    CANCELED ="canceled"
+}
