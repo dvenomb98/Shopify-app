@@ -20,12 +20,10 @@ const Navbar = () => {
           {navbarData.map(({ title, href }) => (
             <NavLink key={title} href={href} title={title} />
           ))}
-          <Cart />
-          <AccountIcon />
+          <Cart />  
         </ul>
       ) : (
         <div className="flex gap-5">
-          <AccountIcon />
           <Cart />
           <button aria-roledescription="menu" role="menubar">
             <Bars3BottomRightIcon className="w-6 h-6" />

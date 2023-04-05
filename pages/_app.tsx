@@ -8,7 +8,7 @@ import chakraTheme from "@chakra-ui/theme";
 import { CartProvider } from "@/context/CartContext";
 
 export default function App({ Component, pageProps }: AppProps) {
-	const { Drawer, Input, FormLabel, FormError, Form, Select, Checkbox, Radio, Alert } = chakraTheme.components;
+	const { Drawer, Input, FormLabel, FormError, Form, Select, Checkbox, Radio, Alert, Textarea } = chakraTheme.components;
 
 	const theme = extendBaseTheme({
 		fonts: {
@@ -23,7 +23,8 @@ export default function App({ Component, pageProps }: AppProps) {
 			Select,
 			Checkbox,
 			Radio,
-			Alert
+			Alert,
+			Textarea
 		},
 	});
 	return (

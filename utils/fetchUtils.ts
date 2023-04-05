@@ -1,11 +1,8 @@
-import { Delivery } from "@/consts/checkout";
 import { DeliveryStatus } from "@/consts/globals";
 import { CreateOrder } from "@/pages/checkout";
 import { Collection, Product } from "@/types/types";
-
 import { collection, doc, getDocs, query, serverTimestamp, setDoc, where } from "firebase/firestore";
 import { nanoid } from "nanoid";
-
 import { db } from "../firebase";
 
 export enum FirebaseDocs {
@@ -74,6 +71,11 @@ export const fetchProductBySlug = async (slug: string) => {
 
 export const createOrder = async (values: CreateOrder): Promise<boolean> => {
 	try {
+
+		if(!values.order?.length) {
+			throw new Error("Nemáte v košíku žádné položky.")
+		}
+
 		const modifiedValues = {
 			...values,
 			customer: values.customer,
@@ -86,9 +88,7 @@ export const createOrder = async (values: CreateOrder): Promise<boolean> => {
 			delivered: DeliveryStatus.PENDING,
 		};
 
-		if(!values.order?.length) {
-			throw new Error("Nemáte v košíku žádné položky.")
-		}
+		
 		await setDoc(doc(db, FirebaseDocs.ORDERS, modifiedValues.id), modifiedValues);
 		return true;
 	} catch (e) {

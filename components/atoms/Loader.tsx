@@ -11,7 +11,7 @@ const Loader: React.FC<LoaderProps> = ({ sizeClasses }) => {
       <svg
         aria-hidden="true"
         className={classNames(
-          'mr-2 text-neutral-gray animate-spin  fill-neutral-blue',
+          'mx-auto text-neutral-gray animate-spin  fill-neutral-blue',
           sizeClasses ? sizeClasses : 'w-6 h-6',
         )}
         viewBox="0 0 100 101"

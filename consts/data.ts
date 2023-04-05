@@ -11,7 +11,12 @@ export const navbarData = [
     title: "Velkoobchod",
     href: "/velkoobchod",
   },
+  {
+    title: "Kontakt",
+    href: "/kontakt",
+  },
 ];
+
 
 export const conditionsData = [
   {

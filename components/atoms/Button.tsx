@@ -79,6 +79,6 @@ export const Button: React.FC<ButtonProps> = ({
     onClick={onClick}
     {...props}
   >
-    {loading ? <Loader /> : children}
+    {loading ? <Loader  /> : children}
   </button>
 );
