@@ -18,6 +18,7 @@ export enum API {
 
 export enum DeliveryStatus {
     DELIVERED = "delivered",
+    
     PENDING = "pending",
     CANCELED ="canceled"
 }

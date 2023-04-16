@@ -2,10 +2,9 @@ import useMobileWidth from "@/hooks/useMobile";
 import React from "react";
 import NavLink from "../atoms/NavLink";
 import NavLayout from "../layouts/NavLayout";
-import Cart from "../cart/Cart";
-import AccountIcon from "../account/AccountIcon";
 import { Bars3BottomRightIcon } from "@heroicons/react/20/solid";
 import { navbarData } from "@/consts/data";
+import Cart from "../cart/Cart";
 
 
 const Navbar = () => {
@@ -20,7 +19,7 @@ const Navbar = () => {
           {navbarData.map(({ title, href }) => (
             <NavLink key={title} href={href} title={title} />
           ))}
-          <Cart />  
+          <Cart/>  
         </ul>
       ) : (
         <div className="flex gap-5">
