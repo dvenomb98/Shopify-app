@@ -21,14 +21,15 @@ interface CheckoutPanelProps {
 }
 
 const CheckoutPanel: FC<CheckoutPanelProps> = ({ status }) => {
-	const { isSubmitting } = useFormikContext();
+
+	const { isSubmitting  } = useFormikContext();
 
 	return (
 		<div className="lg:basis-1/3 flex flex-col gap-5">
 			<h4 className="font-bold text-h3">Vaše objednávka</h4>
 			<CheckoutOrder />
 			<CheckoutDelivery />
-			<FormInput type="datetime-local" name="pickupdate" min={minDate} helperText={"Datum vyzvednutí musí být v souladu s otevírací dobou."} label="Přibližný čas vyzvednutí"/>
+			<FormInput type="datetime-local"   name="pickupdate" min={minDate} helperText={"Datum vyzvednutí musí být v souladu s otevírací dobou."} label="Přibližný čas vyzvednutí"/>
 			<CheckoutPayment />
 			<FormCheckbox
 				name="customer.consent"

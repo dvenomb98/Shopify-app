@@ -1,6 +1,6 @@
 import PageHeader from "@/components/header/PageHeader";
+import CardsLayout from "@/components/layouts/CardLayouts";
 import PageLayout from "@/components/layouts/PageLayout";
-import ProductsLayout from "@/components/layouts/ProductsLayout";
 import ProductCard from "@/components/products/ProductCard";
 import SearchSidebar from "@/components/sidebar/SearchSidebar";
 import { CollectionsNavbar, Product } from "@/types/types";
@@ -28,7 +28,7 @@ const Index: NextPage<IndexProps> = ({
           description="Gummies ice cream tart lollipop pudding. Chocolate bar fruitcake pastry pudding cheesecake. Croissant soufflé topping bonbon cookie dragée. Sesame snaps candy canes toffee jelly candy topping cake candy candy canes."
         />
 
-        <ProductsLayout>
+        <CardsLayout>
           {allProducts?.length ? (
             allProducts?.map((product) => (
               <ProductCard key={product.id} product={product} />
@@ -36,7 +36,7 @@ const Index: NextPage<IndexProps> = ({
           ) : (
             <p>Kategorie nenalezeny.</p>
           )}
-        </ProductsLayout>
+        </CardsLayout>
       </PageLayout>
     </>
   );

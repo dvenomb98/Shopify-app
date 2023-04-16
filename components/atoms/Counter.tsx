@@ -15,7 +15,6 @@ const buttonClass = "w-fit px-5"
 
 const Counter: FC<CounterProps> = ({ value, maxValue, minValue, addCount, decreaseCount, allowRemove }) => {
 
-
 const disableIncrement = maxValue <= value
 const disableDecrement = allowRemove ? undefined : minValue >= value
 

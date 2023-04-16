@@ -2,7 +2,6 @@ import AdressContact from "@/components/atoms/AdressContact";
 import EmailContact from "@/components/atoms/EmailContact";
 import PhoneContact from "@/components/atoms/PhoneContact";
 import ContactForm from "@/components/contact/ContactForm";
-import FooterContact from "@/components/footer/FooterContact";
 import PageHeader from "@/components/header/PageHeader";
 import PageLayout from "@/components/layouts/PageLayout";
 import MapLocation from "@/components/map/MapLocation";

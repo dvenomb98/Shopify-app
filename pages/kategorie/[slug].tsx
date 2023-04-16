@@ -1,6 +1,5 @@
 import PageHeader from "@/components/header/PageHeader";
 import PageLayout from "@/components/layouts/PageLayout";
-import ProductsLayout from "@/components/layouts/ProductsLayout";
 import ProductCard from "@/components/products/ProductCard";
 import SearchSidebar from "@/components/sidebar/SearchSidebar";
 import { CollectionsNavbar } from "@/types/types";
@@ -10,6 +9,7 @@ import { GetStaticPaths, GetStaticProps } from "next";
 import React, { FC } from "react";
 import { Product, Collection } from "@/types/types";
 import { Alert, AlertIcon } from "@chakra-ui/react";
+import CardsLayout from "@/components/layouts/CardLayouts";
 
 interface CollectionProps {
 	collection: Collection;
@@ -27,11 +27,11 @@ const Collection: FC<CollectionProps> = ({ collection, allCollections, products 
 			<PageLayout>
 				<PageHeader title={title} description={description} />
 				{products?.length ? (
-					<ProductsLayout className="lg:min-h-screen">
+					<CardsLayout className="lg:min-h-screen">
 						{products?.map((product) => (
 							<ProductCard key={product.id} product={product} />
 						))}
-					</ProductsLayout>
+					</CardsLayout>
 				) : (
 					<Alert status="info">
 						<AlertIcon />

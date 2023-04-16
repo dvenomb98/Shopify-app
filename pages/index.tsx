@@ -1,41 +1,37 @@
-import InternalLink from "@/components/atoms/InternalLink";
+import ViewAllProducts from "@/components/atoms/ViewAllProducts";
 import PageBanner from "@/components/header/PageBanner";
+import PhotosWrapper from "@/components/instagram/PhotosWrapper";
+import CardsLayout from "@/components/layouts/CardLayouts";
 import PageLayout from "@/components/layouts/PageLayout";
-import ProductsLayout from "@/components/layouts/ProductsLayout";
 import CollectionCard from "@/components/products/CollectionCard";
-import { Collection } from "@/types/types";
-import { fetchAllCollections } from "@/utils/fetchUtils";
-import { ArrowRightIcon } from "@heroicons/react/20/solid";
+import { Collection, InstagramPhoto } from "@/types/types";
+import { fetchAllCollections, fetchInstagramPhotos } from "@/utils/fetchUtils";
 import { NextPage } from "next";
-import React  from "react"
+import React from "react"
 
 interface HomeProps {
   collections: Collection[]
+  instagramPhotos: InstagramPhoto[]
 }
 
-const Home: NextPage<HomeProps> = ({collections}) => {
+const Home: NextPage<HomeProps> = ({collections, instagramPhotos}) => {
 
   return (
     <>
-      <PageBanner />
+      {/* <PageBanner /> */}
       <PageLayout>
         <div className="flex justify-between items-center">
           <h2 className="text-h2 font-bold">Produkty</h2>
-          <InternalLink
-            href="/produkty"
-            className="hover:underline"
-            removeClassNames
-          >
-            <span className="flex items-center gap-1">
-              Zobrazit všechny <ArrowRightIcon className="w-4 h-4" />
-            </span>
-          </InternalLink>
+          <ViewAllProducts />
         </div>
-        <ProductsLayout gridVariant="flex">
+
+        <CardsLayout gridVariant="three_cols">
           {collections?.map((item) => (
             <CollectionCard key={item.id} item={item} />
           ))}
-        </ProductsLayout>
+        </CardsLayout>
+
+        <PhotosWrapper photos={instagramPhotos} />
       </PageLayout>
     </>
   );
@@ -47,10 +43,12 @@ export default Home;
 export const getStaticProps = async () => {
   // Fetch all collections
   const collections: Collection[] = await fetchAllCollections()
+  const instagramPhotos = await fetchInstagramPhotos(6)
 
   return {
    props: {
-    collections: collections
+    collections: collections,
+    instagramPhotos: instagramPhotos
   },
   revalidate: 200
  };

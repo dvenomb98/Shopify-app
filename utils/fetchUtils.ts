@@ -1,7 +1,16 @@
 import { DeliveryStatus } from "@/consts/globals";
 import { CreateOrder } from "@/pages/checkout";
-import { Collection, Product } from "@/types/types";
-import { collection, doc, getDocs, query, serverTimestamp, setDoc, where } from "firebase/firestore";
+import { Collection, Product , InstagramPhoto} from "@/types/types";
+import axios from "axios";
+import {
+	collection,
+	doc,
+	getDocs,
+	query,
+	serverTimestamp,
+	setDoc,
+	where,
+} from "firebase/firestore";
 import { nanoid } from "nanoid";
 import { db } from "../firebase";
 
@@ -71,9 +80,8 @@ export const fetchProductBySlug = async (slug: string) => {
 
 export const createOrder = async (values: CreateOrder): Promise<boolean> => {
 	try {
-
-		if(!values.order?.length) {
-			throw new Error("Nemáte v košíku žádné položky.")
+		if (!values.order?.length) {
+			throw new Error("Nemáte v košíku žádné položky.");
 		}
 
 		const modifiedValues = {
@@ -88,11 +96,22 @@ export const createOrder = async (values: CreateOrder): Promise<boolean> => {
 			delivered: DeliveryStatus.PENDING,
 		};
 
-		
 		await setDoc(doc(db, FirebaseDocs.ORDERS, modifiedValues.id), modifiedValues);
 		return true;
 	} catch (e) {
 		console.error(e);
 		return false;
+	}
+};
+
+export const fetchInstagramPhotos = async (count: number): Promise<InstagramPhoto[]> => {
+	const url = `https://graph.instagram.com/me/media?fields=id,caption,media_type,media_url,thumbnail_url,permalink,timestamp&access_token=${process.env.INSTAGRAM_SECRET}&limit=${count}`;
+	try {
+		const response = await axios.get(url);
+		const { data } = response;
+		return data.data
+	} catch (error) {
+		console.error("Error fetching Instagram photos:", error);
+		return [];
 	}
 };

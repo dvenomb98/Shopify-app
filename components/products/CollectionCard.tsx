@@ -17,7 +17,7 @@ const CollectionCard: FC<CollectionCardProps> = ({ item }) => {
  
   return (
     <InternalLink href={`${URLS.CATEGORY}/${slug}`} removeClassNames className="cursor-pointer">
-      <div className="w-full aspect-square relative overflow-hidden group h-72 sm:h-48">
+      <div className="aspect-square relative overflow-hidden group h-full">
         <Image
           src={image || fallbackIMG.src}
           alt={title || fallbackIMG.alt}
